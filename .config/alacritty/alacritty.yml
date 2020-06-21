@@ -1,28 +1,22 @@
 env:
-
   TERM: xterm-256color
 
 font:
-
     normal:
-        family: Fira Code Medium
-
-        style: Regular
+        family: Fira Code
+        style: Medium
     
     bold:
-        family: Fira Code Medium
-
+        family: Fira Code
         style: Bold
     
     italic:
-        family: Fira Code Medium
+        family: JetBrains Mono
+        style: Medium Italic
 
-        style: Italic
-
-    size: 14.0
+    size: 11.0
 
 window:
-
     padding:
         x: 2
         y: 2
@@ -61,4 +55,8 @@ colors:
 background_opacity: 0.7
 
 key_bindings:
-  - { key: Return,   mods: Control|Shift, action: SpawnNewInstance }
+  - {
+      key: Return,
+      mods: Control|Shift,
+      action: SpawnNewInstance
+}
