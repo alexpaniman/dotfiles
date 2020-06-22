@@ -23,13 +23,15 @@ import XMonad.Hooks.SetWMName (setWMName)
 myTerminal = "alacritty"
 myMusicPlayer = "cmus"
 myTop = "gotop"
-myBrowser = "firefox"
+myBrowser = "brave"
 
 myStartupHook = do
     spawnOnce "nitrogen --restore &"
     spawnOnce "picom --config ~/.config/picom/picom.conf &"
     spawnOnce "/usr/lib/xfce4/notifyd/xfce4-notifyd &"
     spawnOnce "udiskie &"
+
+    setWMName "LG3D"
 
 myLayoutHook = mkToggle (single MIRROR) $ smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ spacing 6 $ 
     ResizableTall 1 (3/100) (1/2) [] ||| ThreeColMid 1 (3/100) (1/2)
@@ -73,11 +75,11 @@ main = xmonad $ desktopConfig
     -- Mirror
     , ("M-S-\\", sendMessage $ Toggle MIRROR)
     -- DMenu
-    , ("M-<Return>", spawn $ "dmenu_run -fn 'Fira Code Medium:size=10'" ++
-                   " -nb '#292d3e'" ++
-				   " -nf '#bbc5ff'" ++
-				   " -sb '#82AAFF'" ++
-				   " -sf '#292d3e'" ++
+    , ("M-<Return>", spawn $ "dmenu_run -fn 'Fira Code Medium:size=12'" ++
+                   " -nb '#282828'" ++
+				   " -nf '#cccccc'" ++
+				   " -sb '#d79921'" ++
+				   " -sf '#282828'" ++
                    " -p 'Run anything:'")
     -- Volume
     , ("M-<Up>", spawn "amixer set Master 5%+")
