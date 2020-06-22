@@ -90,4 +90,12 @@ main = xmonad $ desktopConfig
     -- Screenshot
     , ("C-<Print>", spawn "maim -s | xclip -selection clipboard -t image/png")
     , ("<Print>", spawn "maim | xclip -selection clipboard -t image/png")
+    -- Music
+    , ("M-m <Space>", spawn "cmus-remote --pause")
+    , ("M-m n", spawn "cmus-remote --next")
+    , ("M-m p", spawn "cmus-remote --prev")
+    , ("M-m r", spawn "cmus-remote --repeat")
+    , ("M-m s", spawn "cmus-remote --shuffle")
+    , ("M-m h", spawn "cmus-remote --seek -5")
+    , ("M-m l", spawn "cmus-remote --seek +5")
     ]
