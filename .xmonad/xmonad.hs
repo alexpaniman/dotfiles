@@ -27,7 +27,13 @@ myBrowser = "brave"
 
 myStartupHook = do
     spawnOnce "nitrogen --restore &"
-    spawnOnce "picom --config ~/.config/picom/picom.conf &"
+
+    spawnOnce $ "picom" ++
+        " --experimental-backends" ++
+        " --backend glx" ++
+        " --vsync" ++
+        " --config ~/.config/picom/picom.conf &"
+
     spawnOnce "/usr/lib/xfce4/notifyd/xfce4-notifyd &"
     spawnOnce "udiskie &"
 
@@ -36,10 +42,7 @@ myStartupHook = do
 myLayoutHook = mkToggle (single MIRROR) $ smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ spacing 6 $ 
     ResizableTall 1 (3/100) (1/2) [] ||| ThreeColMid 1 (3/100) (1/2)
 
-myManageHook = composeAll [
-      namedScratchpadManageHook myScratchpads
-  --, appName =? "jetbrains-idea-ce" --> doFloat
-    ]
+myManageHook = namedScratchpadManageHook myScratchpads
 
 myScratchpads = [
       NS "terminal" spawnTerminal findTerminal manageScratchpad
