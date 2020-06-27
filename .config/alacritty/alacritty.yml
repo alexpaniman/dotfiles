@@ -14,7 +14,7 @@ font:
         family: JetBrains Mono
         style: Medium Italic
 
-    size: 11.0
+    size: 14.0
 
 window:
     padding:
@@ -52,7 +52,7 @@ colors:
     cyan:    '#8ec07c'
     white:   '#ebdbb2'
 
-background_opacity: 0.7
+background_opacity: 0.8
 
 key_bindings:
   - {
