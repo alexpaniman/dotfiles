@@ -12,11 +12,18 @@ set relativenumber
 call plug#begin('~/.vim/plugged')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'morhetz/gruvbox'
+Plug 'SirVer/ultisnips'
 call plug#end()
+
+let g:UltiSnipsExpandTrigger="<c-e>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 autocmd vimenter * colorscheme gruvbox
 
 let g:gruvbox_transparent_bg=0.5
+
+inoremap jk <esc>
 
 " Transparency
 " hi Normal guibg=NONE ctermbg=NONE
