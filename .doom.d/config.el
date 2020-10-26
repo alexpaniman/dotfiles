@@ -32,7 +32,7 @@
              :size size))
 
 ;; Set fonts
-(setq doom-font (fira-code 16)
+(setq doom-font (fira-code 18)
       doom-big-font (fira-code 22)
       doom-variable-pitch-font (fira-code 18))
 
@@ -40,7 +40,21 @@
 (setq projectile-project-search-path
       '("~/projects/"))
 
+;; SVG screenshots
+(defun screenshot-svg ()
+  "Save a screenshot of the current frame as an SVG image.
+Saves to a temp file and puts the filename in the kill ring."
+  (interactive)
+  (let* ((filename (make-temp-file "Emacs" nil ".svg"))
+         (data (x-export-frames nil 'svg)))
+    (with-temp-file filename
+      (insert data))
+    (kill-new filename)
+    (message filename)))
+
 ;; ---> Org mode <---
+
+(require 'org)
 
 ;; Enable org-mode to export org file with cyrillic to pdf
 (setq org-latex-packages-alist
@@ -59,6 +73,15 @@
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((dot . t)))
+
+;; Show images when opening a file.
+(setq org-startup-with-latex-preview t
+      org-startup-with-inline-images t)
+
+;; Show images after evaluating code blocks.
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+
+;; ---> Flyspell <---
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

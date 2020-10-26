@@ -1,6 +1,6 @@
 # ----------- Oh My ZSH ----------
 export ZSH="/home/alex/.oh-my-zsh"
-ZSH_THEME="gallois"
+ZSH_THEME="robbyrussell"
 
 HYPHEN_INSENSITIVE="true"
 
@@ -21,7 +21,7 @@ export LANG=en_US.UTF-8 export LC_CTYPE=ru_UA.UTF-8
 # --------------------------------
 
 # ----------- Defaults -----------
-export EDITOR='nvim'
+export EDITOR='emacsclient -nw -a ""'
 export BROWSER='firefox'
 # --------------------------------
 
@@ -40,11 +40,23 @@ alias xprcf="$EDITOR $HOME/.xprofile"
 # Useful stuff
 alias youtube-dl-sound='youtube-dl --ignore-errors --output "%(title)s.%(ext)s" --extract-audio --audio-format mp3'
 alias config='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
+
+# Image preview inside vifm
+alias vifm="$HOME/.config/vifm/scripts/vifmrun"
+
+# Use emacsclient to connect to emacs daemon
+emacs-gui() {
+    xdo hide $(xdo id)
+    emacsclient -nc $@
+    exit
+}
+alias emacs-cli='emacsclient -nw -a ""'
 # --------------------------------
 
 # ------------ Scripts -----------
 # Export .local/bin in path for scripts
-PATH="$PATH:~/.local/bin"
+export PATH="$PATH:$HOME/.local/bin/"
+export PATH="$PATH:/opt/mxe/usr/bin/"
 
 song-dl() {
     video=$(echo "$1" | sed 's/\\//g' | grep -oh 'https://www.youtube.com/watch?v=.\{11\}')
