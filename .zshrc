@@ -57,6 +57,8 @@ alias emacs-cli='emacsclient -nw -a ""'
 # Export .local/bin in path for scripts
 export PATH="$PATH:$HOME/.local/bin/"
 export PATH="$PATH:/opt/mxe/usr/bin/"
+export PATH="$PATH:$HOME/.gem/ruby/2.7.0/gems/lydown-0.14.0/bin/"
+export PATH="$PATH:$HOME/.ghcup/bin"
 
 song-dl() {
     video=$(echo "$1" | sed 's/\\//g' | grep -oh 'https://www.youtube.com/watch?v=.\{11\}')

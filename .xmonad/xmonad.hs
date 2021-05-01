@@ -3,6 +3,8 @@ import XMonad
 import XMonad.Config.Desktop
 import System.Exit (exitSuccess)
 
+import XMonad.Layout.IndependentScreens (withScreens)
+
 import XMonad.Layout.Spacing (spacing)
 
 import XMonad.Layout.ThreeColumns
@@ -11,13 +13,16 @@ import XMonad.Layout.ResizableTile
 import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Util.EZConfig (additionalKeysP)
 
-import XMonad.Layout.MultiToggle
+import XMonad.Layout.MultiToggle as MT
+import XMonad.Layout.ToggleLayouts as TL
 import XMonad.Layout.EqualSpacing
-import XMonad.Layout.NoBorders (smartBorders)
+import XMonad.Layout.NoBorders (smartBorders, noBorders)
+import XMonad.Layout.Fullscreen (fullscreenFull)
 import XMonad.Layout.MultiToggle.Instances
 
 import XMonad.Actions.CopyWindow (kill1)
 import XMonad.Actions.WithAll (killAll)
+import XMonad.Actions.NoBorders (toggleBorder)
 
 import XMonad.Util.NamedScratchpad
 import qualified XMonad.StackSet as W
@@ -33,6 +38,8 @@ myFileManager = "/home/alex/.config/vifm/scripts/vifmrun"
 myEditor = "emacsclient -nc -a ''"
 
 myStartupHook = do
+    spawnOnce "/home/alex/.profile &"
+
     spawnOnce "flameshot &"
     
     spawnOnce "nitrogen --restore &"
@@ -50,7 +57,7 @@ myStartupHook = do
 
     setWMName "LG3D"
 
-myLayoutHook = mkToggle (single MIRROR) $ smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ equalSpacing 24 6 0 6 $
+myLayoutHook = toggleLayouts (noBorders Full) $ mkToggle (single MIRROR) $ smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ equalSpacing 24 6 0 6 $
     ResizableTall 1 (3/100) (1/2) [] ||| ThreeColMid 1 (3/100) (1/2)
 
 myManageHook = namedScratchpadManageHook myScratchpads
@@ -75,6 +82,7 @@ main = xmonad $ ewmh desktopConfig
     , layoutHook = myLayoutHook
     , modMask = mod4Mask
     , terminal = myTerminal
+    , workspaces = withScreens 2 [show i | i <- [0..9]]
     , focusFollowsMouse = False
     , normalBorderColor = "#18081A"
     , focusedBorderColor = "#fa0574" -- "#6f00cc"
@@ -86,16 +94,19 @@ main = xmonad $ ewmh desktopConfig
     , ("M-<Return>", spawn $ myTerminal)
     -- Apps
     , ("M-i", spawn $ myBrowser)
-    , ("M-e", spawn $ myEditor)
+    , ("M-a", spawn $ myEditor)
     , ("M-s", spawn $ "~/.emacs_anywhere/bin/run")
     , ("M-; t", spawn $ myTerminal ++ " -e " ++ myTop)
     , ("M-; f", spawn $ myTerminal ++ " -e " ++ myFileManager)
     -- Debug
     , ("M-; e", spawn "ps aux | grep -ie emacs | grep -v grep | awk '{print $2}' | xargs kill -SIGUSR2")
     -- Fullscreen
-    , ("M-f", sendMessage $ Toggle FULL)
+    , ("M-f", -- (withFocused toggleBorder) <+> (sendMessage $ Toggle FULL)
+       (sendMessage (TL.Toggle "Full"))
+      )
+    -- , ("M-b", withFocused toggleBorder)
     -- Mirror
-    , ("M-m", sendMessage $ Toggle MIRROR)
+    , ("M-m", sendMessage $ MT.Toggle MIRROR)
     -- DMenu
     , ("M-o", spawn $ "dmenu_run -p 'Run anything:'")
     -- Volume
@@ -119,7 +130,18 @@ main = xmonad $ ewmh desktopConfig
     , ("M-p s", spawn "cmus-remote --shuffle")
     , ("M-p h", spawn "cmus-remote --seek -15")
     , ("M-p l", spawn "cmus-remote --seek +15")
+    , ("M-C-<Up>", spawn "~/.local/bin/change-volume 'ALSA plug-in [cmus]' +5")
+    , ("M-C-<Down>", spawn "~/.local/bin/change-volume 'ALSA plug-in [cmus]' -5")
+    , ("M-v t <Up>", spawn "~/.local/bin/change-volume 'WEBRTC VoiceEngine' +15")
+    , ("M-v t <Down>", spawn "~/.local/bin/change-volume 'WEBRTC VoiceEngine' -15")
     -- Scripts
     , ("M-x d", spawn "~/.local/bin/mount-android-device")
-    , ("M-r", spawn "~/.local/bin/dmenu_latex" )
+    , ("M-]", spawn "~/.local/bin/dmenu_latex")
+    , ("M-[", spawn "~/.local/bin/read-screen")
+    , ("M-g", spawn "~/.local/bin/search-clipboard")
+    , ("M-S-g", spawn "~/.local/bin/search-selection")
+    -- , ("M-/", spawn "~/.local/bin/send-screenshot")
+    , ("M-'", sendMessage (TL.Toggle "Full"))
+    -- , ("M-<Left>", spawn "~/.local/bin/photo-previous")
+    -- , ("M-<Right>", spawn "~/.local/bin/photo-next")
     ]

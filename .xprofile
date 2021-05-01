@@ -5,4 +5,6 @@ setxkbmap -model pc104 -layout us,ru -option grp:alt_shift_toggle
 # setxkbmap -option caps:super
 setxkbmap -option 'caps:ctrl_modifier' && xcape -e 'Caps_Lock=Escape'
 
+xrandr --output HDMI-0 --right-of DVI-D-0
+
 exec xmonad
