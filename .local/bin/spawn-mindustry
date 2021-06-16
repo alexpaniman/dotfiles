@@ -1,0 +1,15 @@
+#!/bin/sh
+
+mkdir -p ~/mindustry/alternative-data/
+cd ~/mindustry/alternative-data/ || exit
+selection="$(printf '%s\ncreate' "$(ls)" | dmenu)"
+
+case "$selection" in
+    "create")
+        echo ' ' | dmenu -p "Enter new profile name:" | xargs mkdir
+    ;;
+
+    *)
+        (MINDUSTRY_DATA_DIR="$(pwd)/$selection" mindustry &) &
+    ;;
+esac

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cd /tmp/ || return
+
+formula=$(echo "" | dmenu -p "Enter LaTeX formula:");
+file=$(pnglatex -f "$formula" -d 4000 -m 3 -b "Transparent");
+xclip -selection clipboard -t image/png < "$file"
+
+rm "$file"

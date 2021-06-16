@@ -54,6 +54,7 @@ myStartupHook = do
     spawnOnce "udiskie &"
 
     spawnOnce "emacs --daemon &"
+    spawnOnce "/home/alex/.local/bin/huion-setup.sh primary"
 
     setWMName "LG3D"
 
@@ -140,8 +141,11 @@ main = xmonad $ ewmh desktopConfig
     , ("M-[", spawn "~/.local/bin/read-screen")
     , ("M-g", spawn "~/.local/bin/search-clipboard")
     , ("M-S-g", spawn "~/.local/bin/search-selection")
+    , ("M-; m", spawn "~/.local/bin/spawn-mindustry")
     -- , ("M-/", spawn "~/.local/bin/send-screenshot")
     , ("M-'", sendMessage (TL.Toggle "Full"))
+    , ("M-<Left>", spawn "~/.local/bin/huion-setup.sh 1")
+    , ("M-<Right>", spawn "~/.local/bin/huion-setup.sh 2")
     -- , ("M-<Left>", spawn "~/.local/bin/photo-previous")
     -- , ("M-<Right>", spawn "~/.local/bin/photo-next")
     ]

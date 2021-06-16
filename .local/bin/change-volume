@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# $1 --- program you need to change volume for
+# $2 --- volume change (e.g. -10 or +30)
+
+current_volume="$(pa_volume "$1" | awk '{ print $NF }' | sed 's/.$//')"
+new_volume="$(echo "($current_volume) + ($(echo "$2" | sed 's/+//'))" | bc)"
+
+if [ "$new_volume" -ge 100 ]; then
+    new_volume=100
+fi
+
+if [ "$new_volume" -le 0 ]; then
+    new_volume=0
+fi
+
+pa_volume "$1" "$new_volume"

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+keyword="$(xclip -selection clipboard -out)"
+firefox "www.duck.com/?q=$keyword"

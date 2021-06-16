@@ -1,0 +1,4 @@
+#!/bin/sh
+
+keyword="$(xsel --output)"
+firefox "www.duck.com/?q=$keyword"

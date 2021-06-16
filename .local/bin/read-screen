@@ -1,0 +1,28 @@
+#!/bin/sh
+
+input_file="$(mktemp /tmp/screen-part.XXXXXX.png)"
+lang="$(echo -ne "english\nrussian\nukranian" | dmenu)" || exit
+
+case "$lang" in
+    "english")
+        lang="eng"
+        ;;
+
+    "russian")
+        lang="rus"
+        ;;
+
+    "ukranian")
+        lang="rus"
+        ;;
+esac
+
+maim -s > "$input_file"
+
+output_file="$(mktemp /tmp/screen-text.XXXXXX.txt)"
+tesseract "$input_file" "${output_file%".txt"}" -l "$lang"
+
+xclip "$output_file" -selection clipboard
+
+rm "$output_file"
+rm "$input_file"
