@@ -73,8 +73,37 @@ song-dl() {
 }
 
 run-cpp() {
-    g++ -O3 "$1" -o "output.out"
+    echo "------- COMPILER -------"
+    echo "g++ ... -O2 $1 -o output.out"
+    echo -ne "\n"
+
+    compilation_beg_time="$(date +%s%N)"
+    # g++ -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy \
+    #     -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op \
+    #     -Wmissing-include-dirs -Wnoexcept -Wold-style-cast -Woverloaded-virtual \
+    #     -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-null-sentinel \
+    #     -Wstrict-overflow=5 -Wswitch-default -Wundef -Wconversion -Wuseless-cast \
+    #     -Wzero-as-null-pointer-constant -O2 -march=native -O2 "$1" -o "output.out" || exit
+
+    g++ -D NDEBUG -g -std=c++14 -Wall -Wextra -Weffc++ -Waggressive-loop-optimizations -Wc++0x-compat -Wc++11-compat -Wc++14-compat -Wcast-align -Wcast-qual -Wchar-subscripts -Wconditionally-supported -Wconversion -Wctor-dtor-privacy -Wempty-body -Wfloat-equal -Wformat-nonliteral -Wformat-security -Wformat-signedness -Wformat=2 -Winline -Wlarger-than=8192 -Wlogical-op -Wnon-virtual-dtor -Wopenmp-simd -Woverloaded-virtual -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstack-usage=8192 -Wstrict-null-sentinel -Wstrict-overflow=2 -Wsuggest-attribute=noreturn -Wsuggest-final-methods -Wsuggest-final-types -Wsuggest-override -Wswitch-default -Wswitch-enum -Wsync-nand -Wundef -Wunreachable-code -Wunused -Wuseless-cast -Wvariadic-macros -Wno-literal-suffix -Wno-missing-field-initializers -Wno-narrowing -Wno-old-style-cast -Wno-varargs -fcheck-new -fsized-deallocation -fstack-check -fstack-protector -fstrict-overflow -flto-odr-type-merging -fno-omit-frame-pointer -fPIE -fsanitize=address -fsanitize=alignment -fsanitize=bool -fsanitize=bounds -fsanitize=enum -fsanitize=float-cast-overflow -fsanitize=float-divide-by-zero -fsanitize=integer-divide-by-zero -fsanitize=leak -fsanitize=nonnull-attribute -fsanitize=null -fsanitize=object-size -fsanitize=return -fsanitize=returns-nonnull-attribute -fsanitize=shift -fsanitize=signed-integer-overflow -fsanitize=undefined -fsanitize=unreachable -fsanitize=vla-bound -fsanitize=vptr -march=native -O2 -lm -pie "$1" -o "output.out" || return
+
+    compilation_end_time="$(date +%s%N)"
+
+    echo "-------- OUTPUT --------"
+    run_beg_time="$(date +%s%N)"
     ./output.out
+    run_end_time="$(date +%s%N)"
+    echo -ne "\n"
+
+    compilation_time="$((($compilation_end_time - $compilation_beg_time)/1000000))"
+    run_time="$((($run_end_time - $run_beg_time)/1000000))"
+
+    number_length="$((${#compilation_time} > ${#run_time} ? ${#compilation_time} : ${#run_time}))"
+
+    echo "-------- STATUS --------"
+    printf "Compilation time: %*sms\n" "$number_length" "$compilation_time"
+    printf "Execution   time: %*sms\n" "$number_length" "$run_time"
+
     rm output.out
 }
 # --------------------------------

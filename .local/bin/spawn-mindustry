@@ -6,10 +6,14 @@ selection="$(printf '%s\ncreate' "$(ls)" | dmenu)"
 
 case "$selection" in
     "create")
-        echo ' ' | dmenu -p "Enter new profile name:" | xargs mkdir
+        echo ' ' | dmenu -p "Enter new profile name:" | xargs mkdir || exit
     ;;
 
     *)
+        if [ ! -d "$selection" ]; then
+            exit
+        fi
+        
         (MINDUSTRY_DATA_DIR="$(pwd)/$selection" mindustry &) &
     ;;
 esac
