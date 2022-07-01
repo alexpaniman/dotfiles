@@ -52,6 +52,8 @@
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
+(global-set-key (kbd "C-x C-o") 'ff-find-other-file)
+
 ;; Initialize package sources
 (require 'package)
 
@@ -104,6 +106,8 @@
 (use-package rust-mode)
 
 (use-package cmake-mode)
+
+(use-package telega)
 
 (use-package vterm)
 
@@ -281,8 +285,86 @@ Saves to a temp file and puts the filename in the kill ring."
 
 (use-package org-ref)
 
+;; executing sage in org babel
+(use-package ob-sagemath
+  :config
+  ;; Ob-sagemath supports only evaluating with a session.
+  (setq org-babel-default-header-args:sage '((:session . t)
+                                             (:results . "drawer")))
+  (with-eval-after-load "org"
+    (define-key org-mode-map (kbd "C-c E") 'ob-sagemath-execute-async)))
+
+;; LaTeX preview
+(use-package xenops
+  :quelpa (xenops :fetcher github :repo "dandavison/xenops")
+  :config
+  (setq xenops-reveal-on-entry nil)
+  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  (add-hook 'org-mode-hook #'xenops-mode)
+  (add-hook 'xenops-mode-hook 'xenops-render)
+  (add-hook 'org-babel-after-execute-hook (lambda ()
+                                            (interactive)
+                                            (ignore-errors (xenops-render)))))
+
+(setq xenops-math-image-scale-factor 3.0)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python . t)
+   (js . t)
+   (lisp . t)
+   (java . t)
+   (latex . t)
+   (C . t)
+   (shell . t)
+   (lua . t)))
+
+;; require org-tempo to enable <s expansion
+(require 'org-tempo)
+;; make org babel default to python3
+(setq org-babel-python-command "python3")
+
+;; make long lines break into multiple ones
+(add-hook 'org-mode-hook 'visual-line-mode)
+
+;; disable prompt when executing code block in org mode
+(setq org-confirm-babel-evaluate nil)
+
+;; Show images when opening a file.
+(setq org-startup-with-inline-images t)
+
+;; Show images after evaluating code blocks.
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+
+
 (setq org-startup-indented t
       org-hide-leading-stars t)
+
+;; hide unnecessary stuff
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
+(setq dired-listing-switches "-la")
+(setq dired-dwim-target t) ;; moving files in a smart way when window is split into 2
+
+(add-hook 'dired-mode-hook 'auto-revert-mode) ;; hook to make dired auto refresh files when they get edited/changed/created/whatever
+
+;; make latex preview bigger
+(plist-put org-format-latex-options :scale 1.5)
+
+;; make images default to their original size in latex exports
+(setq org-latex-image-default-scale "1")
+
+;; better than the default, works for tikzpicture
+(setq org-preview-latex-default-process 'imagemagick)
+
+;; syntax highlighting for latex fragments in org mode
+(setq org-highlight-latex-and-related '(native latex script entities))
+
+;; evil mode support for org
+(use-package evil-org)
+
+(require 'org-src)
+(add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
@@ -308,8 +390,7 @@ Saves to a temp file and puts the filename in the kill ring."
         ("" "multicol" f)))
 
 ;; Show images when opening a file.
-(setq org-startup-with-latex-preview t
-      org-startup-with-inline-images t)
+(setq org-startup-with-inline-images t)
 
 ;; Show images after evaluating code blocks.
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
@@ -370,6 +451,11 @@ Saves to a temp file and puts the filename in the kill ring."
               ("b"  . pdf-view-set-slice-from-bounding-box)
               ("r"  . pdf-view-reset-slice)
               ([remap image-next-line] . hydra-pdftools/body)))
+
+(use-package csharp-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode)))
 
 (defhydra hydra-pdftools (:color blue :hint nil)
         "
@@ -725,6 +811,7 @@ Saves to a temp file and puts the filename in the kill ring."
 
 (define-key org-mode-map (kbd "C-c C-a") #'org-latex-export-to-pdf)
 
+(use-package rustic) 
 ;; (use-package ivy-posframe
 ;;   :config (ivy-posframe-mode 1)
 ;;   :custom
@@ -751,7 +838,7 @@ Saves to a temp file and puts the filename in the kill ring."
  '(evil-undo-system 'undo-tree)
  '(helm-minibuffer-history-key "M-p")
  '(package-selected-packages
-   '(glsl-mode rust-mode org-ref nasm-mode graphviz-dot-mode helm-cmd-t writeroom-mode whiteroom-mode page-break-lines emojify unicode-fonts visual-fill-column visial-fill-column visial-fill-column-mode projectile vterm cmake-mode magit dired+ minions helm doom-themes solarized-theme moody gdb-mi quelpa realgud shell-pop c++-mode flycheck ivy-posframe ivy-postframe all-the-icons lsp-haskell haskell-mode dap-mode lsp-treemacs lsp-ivy lsp-ui lsp-mode treemacs-evil treemacs org-pdfview pdf-tools good-scroll auctex tex latex company-math cdlatex undo-tree hydra evil-collection evil helpful ivy-rich counsel which-key rainbow-delimiters rainbow-delimeters use-package ivy))
+   '(rustic xenops ob-sagemath csharp-mode telega.el telega glsl-mode rust-mode org-ref nasm-mode graphviz-dot-mode helm-cmd-t writeroom-mode whiteroom-mode page-break-lines emojify unicode-fonts visual-fill-column visial-fill-column visial-fill-column-mode projectile vterm cmake-mode magit dired+ minions helm doom-themes solarized-theme moody gdb-mi quelpa realgud shell-pop c++-mode flycheck ivy-posframe ivy-postframe all-the-icons lsp-haskell haskell-mode dap-mode lsp-treemacs lsp-ivy lsp-ui lsp-mode treemacs-evil treemacs org-pdfview pdf-tools good-scroll auctex tex latex company-math cdlatex undo-tree hydra evil-collection evil helpful ivy-rich counsel which-key rainbow-delimiters rainbow-delimeters use-package ivy))
  '(unicode-fonts-block-font-mapping
    '(("Aegean Numbers"
       ("Noto Sans Symbols" "Aegean" "Symbola" "Quivira" "Code2001" "Everson Mono:weight=bold" "ALPHABETUM Unicode"))
