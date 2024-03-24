@@ -80,43 +80,44 @@ main = xmonad $ ewmh desktopConfig
     -- XMonad
       ("M-S-r"            , spawn "xmonad --restart")
     , ("M-S-q"            , io exitSuccess)
+    , ("M-S-C-q"          , io exitSuccess                                           )
 
     -- Terminal
-    , ("M-<Return>"       , spawn $ myTerminal)
+    , ("M-<Return>"       , spawn $ myTerminal                                       )
 
     -- Apps
-    , ("M-i"              , spawn $ myBrowser)
-    , ("M-a"              , spawn $ myEditor)
+    , ("M-i"              , spawn $ myBrowser                                        )
+    , ("M-a"              , spawn $ myEditor                                         )
 
-    , ("M-S-s"            , shiftNextScreen >> nextScreen)
-    , ("M-s"              , nextScreen)
+    , ("M-S-s"            , shiftNextScreen >> nextScreen                            )
+    , ("M-s"              , nextScreen                                               )
 
-    , ("M-; t"            , spawn $ myTerminal ++ " -e " ++ myTop)
-    , ("M-; f"            , spawn $ myTerminal ++ " -e " ++ myFileManager)
 
     -- Debug
     , ("M-; e"            , spawn "ps aux | grep -ie emacs | grep -v grep | awk '{print $2}' | xargs kill -SIGUSR2")
+    , ("M-; t"            , spawn $ myTerminal ++ " -e " ++ myTop                    )
+    , ("M-; f"            , spawn $ myTerminal ++ " -e " ++ myFileManager            )
 
     -- Fullscreen
-    , ("M-f"              , (sendMessage (TL.Toggle "Full")))
+    , ("M-f"              , (sendMessage (TL.Toggle "Full"))                         )
 
     -- Mirror
-    , ("M-m"              , sendMessage $ MT.Toggle MIRROR)
+    , ("M-m"              , sendMessage $ MT.Toggle MIRROR                           )
 
     -- DMenu
-    , ("M-o"              , spawn $ "rofi -show run")
+    , ("M-o"              , spawn $ "rofi -show run"                                 )
 
     -- Volume
-    , ("M-<Up>"           , spawn "pactl set-sink-volume @DEFAULT_SINK@ +5%")
-    , ("M-<Down>"         , spawn "pactl set-sink-volume @DEFAULT_SINK@ -5%")
+    , ("M-<Up>"           , spawn "pactl set-sink-volume @DEFAULT_SINK@ +5%"         )
+    , ("M-<Down>"         , spawn "pactl set-sink-volume @DEFAULT_SINK@ -5%"         )
 
     -- Scratchpads
-    , ("M-C-<Return>"     , namedScratchpadAction myScratchpads "terminal")
-    , ("M-C-m"            , namedScratchpadAction myScratchpads "music-player")
+    , ("M-C-<Return>"     , namedScratchpadAction myScratchpads "terminal"           )
+    , ("M-C-m"            , namedScratchpadAction myScratchpads "music-player"       )
 
     -- Close Windows
-    , ("M-d"              , kill1)
-    , ("M-S-d"            , killAll)
+    , ("M-d"              , kill1                                                    )
+    , ("M-S-d"            , killAll                                                  )
 
     -- Screenshot
     , ("S-<Print>"        , spawn "flameshot gui"                                    )
@@ -127,25 +128,27 @@ main = xmonad $ ewmh desktopConfig
     , ("M-'"              , sendMessage (TL.Toggle "Full")                           )
     ]
     ++
-    [ ("M-1"              , windows $ lazyView $ myWorkspaces !! 0)
-    , ("M-2"              , windows $ lazyView $ myWorkspaces !! 1)
-    , ("M-3"              , windows $ lazyView $ myWorkspaces !! 2)
-    , ("M-4"              , windows $ lazyView $ myWorkspaces !! 3)
-    , ("M-5"              , windows $ lazyView $ myWorkspaces !! 4)
-    , ("M-6"              , windows $ lazyView $ myWorkspaces !! 5)
-    , ("M-7"              , windows $ lazyView $ myWorkspaces !! 6)
-    , ("M-8"              , windows $ lazyView $ myWorkspaces !! 7)
-    , ("M-9"              , windows $ lazyView $ myWorkspaces !! 8)]
+    [ ("M-1"              , windows $ lazyView $ myWorkspaces !! 0                   )
+    , ("M-2"              , windows $ lazyView $ myWorkspaces !! 1                   )
+    , ("M-3"              , windows $ lazyView $ myWorkspaces !! 2                   )
+    , ("M-4"              , windows $ lazyView $ myWorkspaces !! 3                   )
+    , ("M-5"              , windows $ lazyView $ myWorkspaces !! 4                   )
+    , ("M-6"              , windows $ lazyView $ myWorkspaces !! 5                   )
+    , ("M-7"              , windows $ lazyView $ myWorkspaces !! 6                   )
+    , ("M-8"              , windows $ lazyView $ myWorkspaces !! 7                   )
+    , ("M-9"              , windows $ lazyView $ myWorkspaces !! 8                   )
+    ]
     ++
-    [ ("M-S-1"            , windows $ W.shift  $ myWorkspaces !! 0)
-    , ("M-S-2"            , windows $ W.shift  $ myWorkspaces !! 1)
-    , ("M-S-3"            , windows $ W.shift  $ myWorkspaces !! 2)
-    , ("M-S-4"            , windows $ W.shift  $ myWorkspaces !! 3)
-    , ("M-S-5"            , windows $ W.shift  $ myWorkspaces !! 4)
-    , ("M-S-6"            , windows $ W.shift  $ myWorkspaces !! 5)
-    , ("M-S-7"            , windows $ W.shift  $ myWorkspaces !! 6)
-    , ("M-S-8"            , windows $ W.shift  $ myWorkspaces !! 7)
-    , ("M-S-9"            , windows $ W.shift  $ myWorkspaces !! 8)]
+    [ ("M-S-1"            , windows $ W.shift  $ myWorkspaces !! 0                   )
+    , ("M-S-2"            , windows $ W.shift  $ myWorkspaces !! 1                   )
+    , ("M-S-3"            , windows $ W.shift  $ myWorkspaces !! 2                   )
+    , ("M-S-4"            , windows $ W.shift  $ myWorkspaces !! 3                   )
+    , ("M-S-5"            , windows $ W.shift  $ myWorkspaces !! 4                   )
+    , ("M-S-6"            , windows $ W.shift  $ myWorkspaces !! 5                   )
+    , ("M-S-7"            , windows $ W.shift  $ myWorkspaces !! 6                   )
+    , ("M-S-8"            , windows $ W.shift  $ myWorkspaces !! 7                   )
+    , ("M-S-9"            , windows $ W.shift  $ myWorkspaces !! 8                   )
+    ]
 
 
 
