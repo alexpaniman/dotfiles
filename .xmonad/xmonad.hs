@@ -30,6 +30,10 @@ import XMonad.Hooks.EwmhDesktops
 
 import XMonad.Actions.CycleWS
 import Data.Map
+
+import XMonad.Layout.BinarySpacePartition
+import XMonad.Actions.MouseResize
+import XMonad.Layout.WindowArranger
   
 
 myTerminal = "alacritty"
@@ -43,7 +47,7 @@ myStartupHook = do
     setWMName "LG3D"
 
 myLayoutHook = toggleLayouts (noBorders Full) $ mkToggle (single MIRROR) $ smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ equalSpacing 24 6 0 6 $
-    ResizableTall 1 (3/100) (1/2) [] ||| ThreeColMid 1 (3/100) (1/2)
+    ResizableTall 1 (3/100) (1/2) [] ||| ThreeColMid 1 (3/100) (1/2) ||| (mouseResize $ windowArrange $ emptyBSP)
 
 myManageHook = namedScratchpadManageHook myScratchpads
 
@@ -62,7 +66,6 @@ myScratchpads = [
 
 
 myWorkspaces = [show i | i <- [0..9]]
-  
 
 main = xmonad $ ewmh desktopConfig
     { borderWidth = 2
@@ -92,9 +95,6 @@ main = xmonad $ ewmh desktopConfig
     , ("M-S-s"            , shiftNextScreen >> nextScreen                            )
     , ("M-s"              , nextScreen                                               )
 
-
-    -- Debug
-    , ("M-; e"            , spawn "ps aux | grep -ie emacs | grep -v grep | awk '{print $2}' | xargs kill -SIGUSR2")
     , ("M-; t"            , spawn $ myTerminal ++ " -e " ++ myTop                    )
     , ("M-; f"            , spawn $ myTerminal ++ " -e " ++ myFileManager            )
 
@@ -126,6 +126,17 @@ main = xmonad $ ewmh desktopConfig
 
     -- Scripts
     , ("M-'"              , sendMessage (TL.Toggle "Full")                           )
+
+    , ("M-C-l"            , sendMessage $ ExpandTowards R                            )
+    , ("M-C-h"            , sendMessage $ ExpandTowards L                            )
+    , ("M-C-j"            , sendMessage $ ExpandTowards D                            )
+    , ("M-C-k"            , sendMessage $ ExpandTowards U                            )
+    , ("M-C-S-l"          , sendMessage $    ShrinkFrom R                            )
+    , ("M-C-S-h"          , sendMessage $    ShrinkFrom L                            )
+    , ("M-C-S-j"          , sendMessage $    ShrinkFrom D                            )
+    , ("M-C-S-k"          , sendMessage $    ShrinkFrom U                            )
+
+    , ("M-<Delete>"       , sendMessage $ NextLayout                                 )
     ]
     ++
     [ ("M-1"              , windows $ lazyView $ myWorkspaces !! 0                   )
