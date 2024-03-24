@@ -1,0 +1,25 @@
+#!/bin/sh
+
+XMONAD_XMESSAGE_CLEARED_DIR="$(mktemp -d "/tmp/xmonad-xmessage-cleared-XXXXXX")";
+cat $(which xmonad) | grep -v XMONAD_XMESSAGE > "$XMONAD_XMESSAGE_CLEARED_DIR/xmonad.sh"
+chmod +x "$XMONAD_XMESSAGE_CLEARED_DIR/xmonad.sh"
+
+
+cat > "$XMONAD_XMESSAGE_CLEARED_DIR/xmonad-xmessage-replacement.sh" << EOF
+#!/bin/sh
+EOF
+chmod +x "$XMONAD_XMESSAGE_CLEARED_DIR/xmonad-xmessage-replacement.sh" 
+
+
+result="$(XMONAD_XMESSAGE="$XMONAD_XMESSAGE_CLEARED_DIR/xmonad-xmessage-replacement.sh" "$XMONAD_XMESSAGE_CLEARED_DIR/xmonad.sh" --recompile 2>&1)"
+
+filtered="$(echo "$result" | sed -n '/.*.hs:/,$p' | grep -v 'Please check the file for errors')"
+
+if echo "$result" | grep error >/dev/null; then 
+    alacritty -e sh -c "echo '$filtered'; read";
+else
+    xmonad --restart
+fi
+
+rm -rf "$XMONAD_XMESSAGE_CLEARED_DIR"
+

@@ -81,8 +81,7 @@ main = xmonad $ ewmh desktopConfig
     } `additionalKeysP` [
 
     -- XMonad
-      ("M-S-r"            , spawn "xmonad --restart")
-    , ("M-S-q"            , io exitSuccess)
+      ("M-S-r"            , spawn "/home/alex/.xmonad/xmonad-recompile-script"       )
     , ("M-S-C-q"          , io exitSuccess                                           )
 
     -- Terminal
