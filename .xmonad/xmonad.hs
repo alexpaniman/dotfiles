@@ -130,10 +130,15 @@ main = xmonad $ ewmh desktopConfig
     , ("M-C-h"            , sendMessage $ ExpandTowards L                            )
     , ("M-C-j"            , sendMessage $ ExpandTowards D                            )
     , ("M-C-k"            , sendMessage $ ExpandTowards U                            )
+
     , ("M-C-S-l"          , sendMessage $    ShrinkFrom R                            )
     , ("M-C-S-h"          , sendMessage $    ShrinkFrom L                            )
     , ("M-C-S-j"          , sendMessage $    ShrinkFrom D                            )
     , ("M-C-S-k"          , sendMessage $    ShrinkFrom U                            )
+
+    , ("M-C-s"            , sendMessage $ Swap                                       )
+    , ("M-M1-j"           , sendMessage $ SplitShift Prev                            )
+    , ("M-M1-k"           , sendMessage $ SplitShift Next                            )
 
     , ("M-<Delete>"       , sendMessage $ NextLayout                                 )
     ]
