@@ -3,7 +3,7 @@ import XMonad
 import XMonad.Config.Desktop
 import System.Exit (exitSuccess)
 
-import XMonad.Layout.Spacing (spacing)
+import XMonad.Layout.Spacing 
 
 import XMonad.Layout.ThreeColumns
 import XMonad.Layout.ResizableTile
@@ -46,7 +46,7 @@ myEditor = "emacsclient -nc -a ''"
 myStartupHook = do
     setWMName "LG3D"
 
-myLayoutHook = toggleLayouts (noBorders Full) $ mkToggle (single MIRROR) $ smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ equalSpacing 24 6 0 6 $
+myLayoutHook = toggleLayouts (noBorders Full) $ mkToggle (single MIRROR) $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ spacingWithEdge 4 $
     ResizableTall 1 (3/100) (1/2) [] ||| ThreeColMid 1 (3/100) (1/2) ||| (mouseResize $ windowArrange $ emptyBSP)
 
 myManageHook = namedScratchpadManageHook myScratchpads
@@ -98,7 +98,7 @@ main = xmonad $ ewmh desktopConfig
     , ("M-; f"            , spawn $ myTerminal ++ " -e " ++ myFileManager            )
 
     -- Fullscreen
-    , ("M-f"              , (sendMessage (TL.Toggle "Full"))                         )
+    , ("M-f"              , sendMessage $ TL.Toggle "Full"                           )
 
     -- Mirror
     , ("M-m"              , sendMessage $ MT.Toggle MIRROR                           )
@@ -131,14 +131,15 @@ main = xmonad $ ewmh desktopConfig
     , ("M-C-j"            , sendMessage $ ExpandTowards D                            )
     , ("M-C-k"            , sendMessage $ ExpandTowards U                            )
 
-    , ("M-C-S-l"          , sendMessage $    ShrinkFrom R                            )
-    , ("M-C-S-h"          , sendMessage $    ShrinkFrom L                            )
-    , ("M-C-S-j"          , sendMessage $    ShrinkFrom D                            )
-    , ("M-C-S-k"          , sendMessage $    ShrinkFrom U                            )
+    , ("M-C-S-l"          , sendMessage $ ShrinkFrom    R                            )
+    , ("M-C-S-h"          , sendMessage $ ShrinkFrom    L                            )
+    , ("M-C-S-j"          , sendMessage $ ShrinkFrom    D                            )
+    , ("M-C-S-k"          , sendMessage $ ShrinkFrom    U                            )
 
     , ("M-C-s"            , sendMessage $ Swap                                       )
-    , ("M-M1-j"           , sendMessage $ SplitShift Prev                            )
-    , ("M-M1-k"           , sendMessage $ SplitShift Next                            )
+    , ("M-C-;"            , sendMessage $ Rotate                                     )
+    , ("M-C-d"            , sendMessage $ SplitShift Prev                            )
+    , ("M-C-f"            , sendMessage $ SplitShift Next                            )
 
     , ("M-<Delete>"       , sendMessage $ NextLayout                                 )
     ]
