@@ -13,10 +13,11 @@ chmod +x "$XMONAD_XMESSAGE_CLEARED_DIR/xmonad-xmessage-replacement.sh"
 
 result="$(XMONAD_XMESSAGE="$XMONAD_XMESSAGE_CLEARED_DIR/xmonad-xmessage-replacement.sh" "$XMONAD_XMESSAGE_CLEARED_DIR/xmonad.sh" --recompile 2>&1)"
 
-filtered="$(echo "$result" | sed -n '/.*.hs:/,$p' | grep -v 'Please check the file for errors')"
+echo "$result" | sed -n '/.*.hs:/,$p' | grep -v 'Please check the file for errors' > "$XMONAD_XMESSAGE_CLEARED_DIR/result"
 
 if echo "$result" | grep error >/dev/null; then 
-    alacritty -e sh -c "echo '$filtered'; read";
+    alacritty -e sh -c "cat '$XMONAD_XMESSAGE_CLEARED_DIR/result'; read";
+    echo "$result"
 else
     xmonad --restart
 fi
