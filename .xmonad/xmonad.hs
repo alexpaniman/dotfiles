@@ -69,6 +69,7 @@ myWorkspaces = [show i | i <- [0..9]]
 
 main = xmonad $ ewmh desktopConfig
     { borderWidth = 2
+    { borderWidth = 1
     , startupHook = myStartupHook
     , manageHook = myManageHook
     , layoutHook = myLayoutHook
