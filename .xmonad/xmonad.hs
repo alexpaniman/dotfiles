@@ -34,6 +34,8 @@ import Data.Map
 import XMonad.Layout.BinarySpacePartition
 import XMonad.Actions.MouseResize
 import XMonad.Layout.WindowArranger
+import XMonad.Layout.BorderResize
+import XMonad.Hooks.WindowSwallowing
   
 
 myTerminal = "alacritty"
@@ -46,9 +48,10 @@ myEditor = "emacsclient -nc -a ''"
 myStartupHook = do
     setWMName "LG3D"
 
-myLayoutHook = toggleLayouts (noBorders Full) $ mkToggle (single MIRROR) $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ spacingWithEdge 4 $
-    ResizableTall 1 (3/100) (1/2) [] ||| ThreeColMid 1 (3/100) (1/2) ||| (mouseResize $ windowArrange $ emptyBSP)
+myLayoutHook = borderResize $ toggleLayouts (noBorders Full) $ mkToggle (single MIRROR) $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ spacingWithEdge 4 $
+    ResizableTall 1 (3/100) (1/2) [] ||| ThreeColMid 1 (3/100) (1/2) ||| (emptyBSP)
 
+myHandleEventHook = swallowEventHook (className =? "Alacritty") (return True)
 myManageHook = namedScratchpadManageHook myScratchpads
 
 myScratchpads = [
@@ -68,11 +71,11 @@ myScratchpads = [
 myWorkspaces = [show i | i <- [0..9]]
 
 main = xmonad $ ewmh desktopConfig
-    { borderWidth = 2
     { borderWidth = 1
     , startupHook = myStartupHook
     , manageHook = myManageHook
     , layoutHook = myLayoutHook
+    , handleEventHook = myHandleEventHook
     , modMask = mod4Mask
     , terminal = myTerminal
     , workspaces = myWorkspaces
