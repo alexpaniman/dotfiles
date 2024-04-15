@@ -109,6 +109,7 @@ main = xmonad $ ewmh desktopConfig
 
     -- DMenu
     , ("M-o"              , spawn $ "rofi -show run"                                 )
+    , ("M-S-<Tab>"        , spawn $ "sleep 1 && xset dpms force standby"             )
 
     -- Volume
     , ("M-<Up>"           , spawn "pactl set-sink-volume @DEFAULT_SINK@ +5%"         )
