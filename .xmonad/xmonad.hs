@@ -108,7 +108,7 @@ main = xmonad $ ewmh desktopConfig
     , ("M-m"              , sendMessage $ MT.Toggle MIRROR                           )
 
     -- DMenu
-    , ("M-o"              , spawn $ "rofi -show run"                                 )
+    , ("M-o"              , spawn $ "rofi -show combi -combi-modi \"window,drun,run\" -modi combi -theme Arc-Dark")
     , ("M-S-<Tab>"        , spawn $ "sleep 1 && xset dpms force standby"             )
 
     -- Volume
