@@ -1,0 +1,63 @@
+#!/usr/bin/env sh
+
+# Reset
+COLOR_OFF='\033[0m'       # Text Reset
+
+# Regular Colors
+BLACK='\033[0;30m'        # Black
+RED='\033[0;31m'          # Red
+GREEN='\033[0;32m'        # Green
+YELLOW='\033[0;33m'       # Yellow
+BLUE='\033[0;34m'         # Blue
+PURPLE='\033[0;35m'       # Purple
+CYAN='\033[0;36m'         # Cyan
+WHITE='\033[0;37m'        # White
+
+zram_disksize=$((1073741824 * "$1"))
+zram_comp_algorithm="$2"
+
+zram_swap_setup=false
+	
+if zramctl | grep zram0 >/dev/null; then
+	echo -e "zram0 is currently ${GREEN}enabled${COLOR_OFF}... "
+
+	current_comp_algorithm="$(cat /sys/block/zram0/comp_algorithm | sed 's|.*\[\(.*\)\].*|\1|')"
+	current_disksize="$(cat /sys/block/zram0/disksize)"
+
+	zram_different=false
+	if [ ! "$current_comp_algorithm" = "$zram_comp_algorithm" ]; then
+		echo -e "    ${CYAN}note${COLOR_OFF}: comp_algorithm differs (${RED}$current_comp_algorithm != $zram_comp_algorithm${COLOR_OFF}) "
+		zram_different=true
+	fi
+
+	if [ ! "$current_disksize" = "$zram_disksize" ]; then
+		echo -e "    ${CYAN}note${COLOR_OFF}:       disksize differs (${RED}$current_disksize != $zram_disksize${COLOR_OFF}) "
+		zram_different=true
+	fi
+	
+	if [ "$zram_different" = true ]; then
+		echo -ne " => zram needs to be recreated with parameters (${GREEN}${1}G${COLOR_OFF}, ${GREEN}$2${COLOR_OFF})... disabling "
+
+		if lsblk | grep zram0 | grep SWAP >/dev/null; then
+			echo -n "swap, "
+			swapoff /dev/zram0
+		fi
+
+		echo "zram"
+		modprobe -r zram
+	fi
+fi
+
+if ! zramctl | grep zram0 >/dev/null; then
+	echo -ne " => setting up zram... "
+	modprobe zram
+	sh -c "echo '$zram_comp_algorithm' > /sys/block/zram0/comp_algorithm"
+	sh -c "echo '$zram_disksize'       > /sys/block/zram0/disksize"
+	echo -e "${GREEN}done${COLOR_OFF}"
+
+	echo " => setting up swap:"
+	mkswap --label zram0 /dev/zram0
+	swapon --priority 100 /dev/zram0
+else
+	echo " => everything is up to date, zram is left as it is"
+fi
