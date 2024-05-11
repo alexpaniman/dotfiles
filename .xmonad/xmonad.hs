@@ -1,3 +1,5 @@
+{-# LANGUAGE TypeApplications #-}
+
 import XMonad
 
 import XMonad.Config.Desktop
@@ -35,7 +37,10 @@ import XMonad.Layout.BinarySpacePartition
 import XMonad.Actions.MouseResize
 import XMonad.Layout.WindowArranger
 import XMonad.Layout.BorderResize
+
+import Data.Monoid (All)
 import XMonad.Hooks.WindowSwallowing
+import qualified XMonad.Util.ExtensibleState as XS
   
 
 myTerminal = "alacritty"
@@ -45,13 +50,40 @@ myBrowser = "firefox"
 myFileManager = "/home/alex/.config/vifm/scripts/vifmrun"
 myEditor = "emacsclient -nc -a ''"
 
+
+
+data SwallowState = Swallow | NoSwallow
+  deriving (Eq, Show, Read, Typeable)
+
+instance ExtensionClass SwallowState where
+  initialValue = Swallow
+  extensionType = PersistentExtension
+
+flipSwallow :: SwallowState -> SwallowState
+flipSwallow Swallow   = NoSwallow
+flipSwallow NoSwallow = Swallow
+
+swallowHook :: Event -> X All
+swallowHook e = do
+  shouldSwallow <- XS.get
+  case shouldSwallow of
+    Swallow   -> swallowEventHook (className =? "Alacritty") (return True) e
+    NoSwallow -> return mempty
+
+
+swallowToggle :: X ()
+swallowToggle = XS.modify flipSwallow
+
+showSwallowingStatus :: Show a => a -> X ()
+showSwallowingStatus x = spawn ("echo " <> {- escape it -} show (show x) <> " | xargs notify-send")
+
 myStartupHook = do
     setWMName "LG3D"
 
 myLayoutHook = borderResize $ toggleLayouts (noBorders Full) $ mkToggle (single MIRROR) $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ spacingWithEdge 4 $
     ResizableTall 1 (3/100) (1/2) [] ||| ThreeColMid 1 (3/100) (1/2) ||| (emptyBSP)
 
-myHandleEventHook = swallowEventHook (className =? "Alacritty") (return True)
+myHandleEventHook = swallowHook
 myManageHook = namedScratchpadManageHook myScratchpads
 
 myScratchpads = [
@@ -90,6 +122,7 @@ main = xmonad $ ewmh desktopConfig
 
     -- Terminal
     , ("M-<Return>"       , spawn $ myTerminal                                       )
+    , ("M-S-<Return>"     , swallowToggle >> XS.get @SwallowState >>= showSwallowingStatus)
 
     -- Apps
     , ("M-i"              , spawn $ myBrowser                                        )
